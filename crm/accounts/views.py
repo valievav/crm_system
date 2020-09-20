@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import render
 
-from .models import Product, Order
+from .models import Customer, Product, Order
 
 
 def home(request):
@@ -25,11 +25,21 @@ def home(request):
 
 def products(request):
     products = Product.objects.all()
+
     context = {
         'products': products
     }
     return render(request, 'accounts/products.html', context)
 
 
-def customer(request):
-    return render(request, 'accounts/customer.html')
+def customer(request, pk):
+    customer = Customer.objects.get(id=pk)
+    orders = customer.order_set.all()
+    orders_count = orders.count
+
+    context = {
+        'customer': customer,
+        'orders': orders,
+        'orders_count': orders_count
+    }
+    return render(request, 'accounts/customer.html', context)
